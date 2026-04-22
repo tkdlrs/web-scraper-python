@@ -25,35 +25,33 @@ def get_first_paragraph_from_html(html):
     return first_p.get_text(strip=True) if first_p else ""
 # 
 def get_urls_from_html(html, base_url):
-    soup = BeautifulSoup(html, 'html.parser')
-    # 
     urls = []
+    soup = BeautifulSoup(html, 'html.parser')
     anchors = soup.find_all("a")
+    # 
     for a in anchors:
-        href = a.get("href")
-        if base_url in href:
-            urls.append(href)
-        else:
-            url = urljoin(base_url, href)
-            urls.append(url)
+        if href := a.get("href"):
+            try:
+                absolute_url = urljoin(base_url, href)
+                urls.append(absolute_url)
+            except Exception as e:
+                print(f"{str(e)}: {href}")
     # 
     return urls
 # 
 def get_images_from_html(html, base_url):
+    image_urls = []
     soup = BeautifulSoup(html, 'html.parser')
+    images = soup.find_all("img")
     # 
-    images = []
+    for img in images:
+        if src := img.get("src"):
+            try:
+                absolute_url = urljoin(base_url, src)
+                image_urls.append(absolute_url)
+            except Exception as e:
+                print(f"{str(e)}: {src}")
     # 
-    imgs = soup.find_all("img")
-    for img in imgs:
-        src = img.get("src")
-        if src:
-            if base_url in src:
-                images.append(src)
-            else:
-                url = urljoin(base_url, src)
-                images.append(url)
-    # 
-    return images
+    return image_urls
 
 #  
