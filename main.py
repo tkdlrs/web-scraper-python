@@ -1,18 +1,20 @@
 import sys
 # 
 def main():
-    sysArgs = sys.argv
+    args = sys.argv
     # 
-    if len(sysArgs) < 2:
+    if len(args) < 2:
         print("no website provided")
         sys.exit(1)
     # 
-    if len(sysArgs) > 2:
+    if len(args) > 2:
         print("too many arguments provided")
         sys.exit(1)
     # 
-    BASE_URL = sysArgs[1]
-    print(f"starting crawl of: {BASE_URL}")
+    base_url = args[1]
+    # 
+    print(f"starting crawl of: {base_url}")
+    # 
     sys.exit(0)
 
 
