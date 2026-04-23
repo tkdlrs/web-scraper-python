@@ -53,5 +53,22 @@ def get_images_from_html(html, base_url):
                 print(f"{str(e)}: {src}")
     # 
     return image_urls
+# 
+def extract_page_data(html, page_url):
+    header = get_heading_from_html(html) 
+    lead = get_first_paragraph_from_html(html)
+    links = get_urls_from_html(html, page_url)
+    images = get_images_from_html(html, page_url)
+    # 
+    print(f"images: {images}")
+    # 
+    return {
+        "url": page_url,
+        "heading": header,
+        "first_paragraph": lead,
+        "outgoing_links": links,
+        "image_urls":  images
+    }
+# 
 
 #  
