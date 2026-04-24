@@ -15,8 +15,15 @@ def main():
     base_url = args[1]
     # 
     print(f"starting crawl of: {base_url}")
-    request = get_html(base_url)
-    print(request)
+    # 
+    try:
+        html = get_html(base_url)
+    except Exception as e:
+        print(f"Error fetching HTML from {base_url}: {str(e)}")
+        sys.exit(1)
+    # 
+    print(html)
+    # 
     print(f"crawl ended")
     # 
     sys.exit(0)

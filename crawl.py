@@ -71,12 +71,17 @@ def extract_page_data(html, page_url):
     }
 # 
 def get_html(url):
-    response = requests.get(url, headers={"User-Agent": "BootCrawler/1.0"})
-    if response.status_code >= 400:
-        raise Exception("error level status code")
+    try:
+        response = requests.get(url, headers={"User-Agent": "BootCrawler/1.0"})
+    except Exception as e:
+        raise Exception(f"network error while fething {url}: {e}")
     # 
-    if "text/html" not in response.headers.get("content-type"):
-        raise Exception("non HTML response")
+    if response.status_code > 399:
+        raise Exception(f"got HTTP error: {response.status_code} {response.reason}")
+    # 
+    content_type = response.headers.get("content-type")
+    if "text/html" not in content_type: 
+        raise Exception(f"got non-HTML response:  {content_type}")
     # 
     return response.text
 #  
