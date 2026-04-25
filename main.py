@@ -1,5 +1,5 @@
 import sys
-from crawl import get_html
+from crawl import crawl_page
 # 
 def main():
     args = sys.argv
@@ -16,13 +16,14 @@ def main():
     # 
     print(f"starting crawl of: {base_url}")
     # 
+    rich_data = {}
     try:
-        html = get_html(base_url)
+        crawl_page(base_url, base_url, rich_data)
     except Exception as e:
         print(f"Error fetching HTML from {base_url}: {str(e)}")
         sys.exit(1)
     # 
-    print(html)
+    print(f"You have crawled {len(rich_data)} pages")
     # 
     print(f"crawl ended")
     # 

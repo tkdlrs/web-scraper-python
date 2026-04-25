@@ -6,6 +6,7 @@ from crawl import (
     get_urls_from_html, 
     get_images_from_html, 
     extract_page_data,
+    crawl_page,
 )
 
 # 
@@ -462,6 +463,37 @@ class TestExtract(unittest.TestCase):
         self.assertEqual(actual, expected)
     # 
 
+# 
+class TestPageCrawl(unittest.TestCase):
+    def test_out_of_scope(self):
+        base = "https://learnwebscraping.dev/practice/ecommerce/"
+        following = "https://boot.dev.com"
+        rich_data = dict()
+        actual = crawl_page(base, following, rich_data)
+        self.assertEqual(actual, None)
+    # 
+    # def test_normalize_url(self):
+    #     base ="https://learnwebscraping.dev/practice/ecommerce/"
+    #     following = ""
+    #     rich_data = dict()
+    #     actual = crawl_page(base, following, rich_data)        
+    #     self.assertEqual(actual, None)
+    # 
+    def test_review_dictionary(self):
+        # Test is attemping to confirm a side affect 
+        base ="https://learnwebscraping.dev/practice/ecommerce/"
+        following = "https://learnwebscraping.dev/practice/ecommerce/"
+        rich_data = dict()
+        expected = { "learnwebscraping.dev/practice/ecommerce/": {
+            "url": "",
+            "heading": "",
+            "first_paragraph": "",
+            "outgoing_links": [],
+            "image_urls": []
+            } 
+        }
+        crawl_page(base, following, rich_data)
+        self.assertIn("learnwebscraping.dev/practice/ecommerce", rich_data)
 # 
 if __name__ == "__main__":
     unittest.main()

@@ -60,8 +60,6 @@ def extract_page_data(html, page_url):
     links = get_urls_from_html(html, page_url)
     images = get_images_from_html(html, page_url)
     # 
-    print(f"images: {images}")
-    # 
     return {
         "url": page_url,
         "heading": header,
@@ -84,4 +82,32 @@ def get_html(url):
         raise Exception(f"got non-HTML response:  {content_type}")
     # 
     return response.text
-#  
+# 
+def crawl_page(base_url, current_url=None, page_data=None):
+    print("-------START-------")
+    # 
+    if base_url not in current_url:
+        print('\noutside scope\n')
+        return
+    # 
+    url = normalize_url(current_url)
+    if url in page_data:
+        print(f"\nurl has already been crawled\n")
+        return
+    # 
+    try:
+        markup = get_html(current_url)
+        print(f"markup: {markup[:250]}")
+        data = extract_page_data(markup, current_url)
+        print(f"data: {data}")
+        page_data[url] = data
+    except Exception as e:
+        raise Exception(f"an error occured getting markup or data: {e}")   
+    print("-------end-------")
+    # recursive part 
+    for next_link in page_data[url]["outgoing_links"]:
+        print(f"next_link: {next_link}")
+        crawl_page(base_url, next_link, page_data)
+    # 
+    return
+# 
