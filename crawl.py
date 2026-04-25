@@ -68,6 +68,36 @@ def extract_page_data(html, page_url):
         "image_urls":  images
     }
 # 
+def crawl_page(base_url, current_url=None, page_data=None):
+    if current_url is None:
+        current_url = base_url
+    # 
+    if page_data is None:
+        page_data = {}
+    # 
+    base_url_obj = urlparse(base_url)
+    current_url_obj = urlparse(current_url)
+    if current_url_obj.netloc != base_url_obj.netloc:
+        return page_data
+    # 
+    normalized_url = normalize_url(current_url)
+    if normalized_url in page_data:
+        return page_data
+    # 
+    print(f"crawling {current_url}")
+    html = safe_get_html(current_url)
+    if html is None:
+        return page_data
+    # 
+    page_info = extract_page_data(html, current_url)
+    page_data[normalized_url] = page_info
+    # recursive part 
+    next_urls = get_urls_from_html(html, base_url)
+    for next_url in next_urls:
+        page_data = crawl_page(base_url, next_url, page_data)
+    # 
+    return page_data
+# 
 def get_html(url):
     try:
         response = requests.get(url, headers={"User-Agent": "BootCrawler/1.0"})
@@ -83,31 +113,9 @@ def get_html(url):
     # 
     return response.text
 # 
-def crawl_page(base_url, current_url=None, page_data=None):
-    print("-------START-------")
-    # 
-    if base_url not in current_url:
-        print('\noutside scope\n')
-        return
-    # 
-    url = normalize_url(current_url)
-    if url in page_data:
-        print(f"\nurl has already been crawled\n")
-        return
-    # 
+def safe_get_html(url):
     try:
-        markup = get_html(current_url)
-        print(f"markup: {markup[:250]}")
-        data = extract_page_data(markup, current_url)
-        print(f"data: {data}")
-        page_data[url] = data
+        return get_html(url)
     except Exception as e:
-        raise Exception(f"an error occured getting markup or data: {e}")   
-    print("-------end-------")
-    # recursive part 
-    for next_link in page_data[url]["outgoing_links"]:
-        print(f"next_link: {next_link}")
-        crawl_page(base_url, next_link, page_data)
-    # 
-    return
-# 
+        print(f"{e}")
+        return None

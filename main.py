@@ -16,14 +16,11 @@ def main():
     # 
     print(f"starting crawl of: {base_url}")
     # 
-    rich_data = {}
-    try:
-        crawl_page(base_url, base_url, rich_data)
-    except Exception as e:
-        print(f"Error fetching HTML from {base_url}: {str(e)}")
-        sys.exit(1)
+    page_data = crawl_page(base_url)
     # 
-    print(f"You have crawled {len(rich_data)} pages")
+    print(f"Found {len(page_data)} pages:")
+    for page in page_data.values():
+        print(f"- {page['url']}: {len(page['outgoing_links'])} outgoing links")
     # 
     print(f"crawl ended")
     # 
