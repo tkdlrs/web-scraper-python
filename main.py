@@ -1,6 +1,7 @@
 import sys
 import asyncio 
 from crawl import crawl_site_async 
+from json_report import write_json_report
 # 
 async def main():
     args = sys.argv
@@ -30,7 +31,10 @@ async def main():
     for page in page_data.values():
         print(f"Found {len(page['outgoing_links'])} outgoing links on {page['url']}")
     # 
-    print(f"Crawl complete")
+    print(f"Crawl complete. Printing report")
+    # 
+    write_json_report(page_data)
+    print(f"Report has been written. The file exists at 'report.json'")
     # 
     sys.exit(0)
 
