@@ -31,10 +31,9 @@ async def main():
     for page in page_data.values():
         print(f"Found {len(page['outgoing_links'])} outgoing links on {page['url']}")
     # 
-    print(f"Crawl complete. Printing report")
+    print(f"Crawling complete. Found {len(page_data)} pages. Printing report")
     # 
     write_json_report(page_data)
-    print(f"Report has been written. The file exists at 'report.json'")
     # 
     sys.exit(0)
 
